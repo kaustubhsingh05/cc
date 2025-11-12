@@ -1,0 +1,9 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+%}
+%%
+[0-9]+    { long v = strtol(yytext, NULL, 10); printf("0x%lX", v); }
+.|\n      { putchar(yytext[0]); }
+%%
+int yywrap(void){ return 1; }

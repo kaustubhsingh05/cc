@@ -1,0 +1,38 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int yylex(void);
+void yyerror(const char *s) { fprintf(stderr, "Error: %s\n", s); }
+%}
+
+%union { int ival; }
+%token <ival> NUMBER
+%token PLUS MULT
+
+%type <ival> expr
+
+%%
+
+input:
+      /* empty */
+    | input line
+    ;
+
+line:
+      expr '\n'   { printf("Result = %d\n", $1); }
+    | '\n'
+    ;
+
+expr:
+      NUMBER                { $$ = $1; }
+    | expr expr PLUS       { $$ = $1 + $2; }
+    | expr expr MULT       { $$ = $1 * $2; }
+    ;
+
+%%
+int main(void) {
+    printf("Enter postfix expressions (one per line). Ctrl+D to exit.\n");
+    yyparse();
+    return 0;
+}

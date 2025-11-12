@@ -1,0 +1,15 @@
+%{
+#include <stdio.h>
+int countA = 0;
+%}
+
+%%
+[Aa][A-Za-z0-9_]*   { countA++; }
+[ \t\r\n]+          { /* skip */ }
+.                   { /* ignore */ }
+%%
+
+int yywrap(void){
+    printf("Words starting with A/a: %d\n", countA);
+    return 1;
+}

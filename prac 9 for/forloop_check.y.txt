@@ -1,0 +1,45 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+void yyerror(const char *s){ fprintf(stderr,"Syntax error: %s\n", s); }
+int yylex(void);
+%}
+
+%union { int ival; char *sval; }
+%token <sval> ID
+%token <ival> NUMBER
+%token FOR LP RP SEMI
+
+%%
+start: for_stmt { printf("Valid for-loop syntax\n"); }
+     ;
+
+for_stmt:
+    FOR LP init_stmt SEMI cond_expr SEMI iter_stmt RP stmt
+    ;
+
+init_stmt: /* allow empty */ /* empty */ 
+         | ID '=' NUMBER
+         ;
+
+cond_expr: /* allow simple cond */ /* empty */
+         | ID relop NUMBER
+         ;
+
+relop: '<' | '>' | LE | GE | EQ | NE
+     ;
+
+iter_stmt: /* empty */
+         | ID "++"
+         | ID "--"
+         | ID '=' ID '+' NUMBER
+         ;
+stmt: ';'  /* simple empty statement */
+    | ID ';' /* simple statement */
+    ;
+%%
+
+int main(void){
+    if(yyparse()==0) return 0;
+    else return 1;
+}

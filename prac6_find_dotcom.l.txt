@@ -1,0 +1,8 @@
+%{
+#include <stdio.h>
+%}
+%%
+^.*\.com[ \t]*$    { printf("Line ends with .com: %s\n", yytext); }
+.|\n               { /* consume other lines silently */ }
+%%
+int yywrap(void){ return 1; }
